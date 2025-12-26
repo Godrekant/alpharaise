@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ALPHARISE | INTEL_INPUT</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Fira+Code:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --j-blue: #00d4ff;
+            --j-dark: #020b14;
+            --j-glow: rgba(0, 212, 255, 0.3);
+            --j-err: #ff0055;
+        }
+
+        body {
+            background-color: var(--j-dark);
+            color: var(--j-blue);
+            font-family: 'Fira Code', monospace;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
+            background: radial-gradient(circle at center, #05162a 0%, #020b14 100%);
+        }
+
+        .kiosk-frame {
+            width: 90vw; height: 85vh;
+            border: 2px solid var(--j-blue);
+            border-radius: 40px;
+            background: rgba(0, 20, 35, 0.8);
+            box-shadow: 0 0 50px var(--j-glow);
+            display: flex; flex-direction: column;
+            padding: 40px; position: relative;
+        }
+
+        .hud-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--j-blue);
+            padding-bottom: 20px; margin-bottom: 20px;
+        }
+        .hud-header h1 { font-family: 'Orbitron'; letter-spacing: 8px; font-size: 1.5rem; margin: 0; }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Slightly tighter for 7 items */
+            gap: 20px;
+            flex-grow: 1;
+        }
+
+        .menu-card {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            opacity: 0; transform: translateY(30px);
+            transition: 0.3s;
+        }
+
+        .menu-card:hover { 
+            background: rgba(0, 212, 255, 0.1); 
+            border-color: var(--j-blue);
+            box-shadow: 0 0 15px var(--j-glow);
+        }
+
+        .item-label { font-family: 'Orbitron'; font-size: 0.75rem; letter-spacing: 2px; color: #fff; }
+        .item-desc { font-size: 0.55rem; color: var(--j-blue); margin-top: 5px; }
+
+        input, select {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--j-blue);
+            color: #fff;
+            padding: 10px; border-radius: 10px;
+            margin-top: 10px; font-family: inherit; outline: none;
+        }
+
+        .footer-bar {
+            margin-top: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px solid var(--j-blue); padding-top: 20px;
+        }
+
+        .btn-submit {
+            background: var(--j-blue);
+            color: #000;
+            border: none;
+            padding: 15px 60px;
+            border-radius: 50px;
+            font-family: 'Orbitron';
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--j-glow);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+<div class="kiosk-frame">
+    <div class="hud-header">
+        <h1>ALPHARISE_INPUT</h1>
+        <div style="font-size: 0.7rem;" id="sys-status">STATUS: AWAITING_BIO_TELEMETRY</div>
+    </div>
+
+    <div class="menu-grid">
+        <div class="menu-card" id="name-card">
+            <div>
+                <div class="item-label">👤 OPERATOR_NAME</div>
+                <div class="item-desc">User identity for profile sync.</div>
+            </div>
+            <input type="text" id="user_name" placeholder="Enter Name">
+        </div>
+
+        <div class="menu-card">
+            <div>
+                <div class="item-label">🌙 SLEEP_RECOVERY</div>
+                <div class="item-desc">Total restorative hours.</div>
+            </div>
+            <input type="number" id="sleep" placeholder="HRS (e.g., 8)">
+        </div>
+
+        <div class="menu-card">
+            <div>
+                <div class="item-label">💧 H2O_FUEL</div>
+                <div class="item-desc">Hydration in glasses.</div>
+            </div>
+            <input type="number" id="water" placeholder="GLASSES (e.g., 8)">
+        </div>
+
+        <div class="menu-card">
+            <div>
+                <div class="item-label">🥗 NUTRIENT_IO</div>
+                <div class="item-desc">Select fuel profile.</div>
+            </div>
+            <select id="diet">
+                <option value="OPTIMIZED_CLEAN">OPTIMIZED_CLEAN</option>
+                <option value="HIGH_GLYCEMIC">HIGH_GLYCEMIC</option>
+                <option value="LOW_CALORIC">LOW_CALORIC</option>
+            </select>
+        </div>
+
+        <div class="menu-card">
+            <div>
+                <div class="item-label">🧠 BIO_SENTIMENT</div>
+                <div class="item-desc">Current emotional state.</div>
+            </div>
+            <select id="mood">
+                <option value="STABLE">STABLE</option>
+                <option value="HIGH_STRESS">HIGH_STRESS</option>
+                <option value="RECOVERY_MODE">RECOVERY_MODE</option>
+            </select>
+        </div>
+
+        <div class="menu-card">
+            <div>
+                <div class="item-label">📱 UI_LATENCY</div>
+                <div class="item-desc">Total digital exposure.</div>
+            </div>
+            <input type="number" id="screen" placeholder="HRS">
+        </div>
+
+        <div class="menu-card">
+            <div>
+                <div class="item-label">🏃 KINETIC_IDX</div>
+                <div class="item-desc">Movement telemetry.</div>
+            </div>
+            <input type="number" id="activity" placeholder="STEPS">
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        <div style="font-size: 0.8rem;" id="footer-info">TOTAL ITEMS: 07 // READY FOR PROCESSING</div>
+        <button class="btn-submit" onclick="submitData()">PROCESS_ORDER</button>
+    </div>
+</div>
+
+<script>
+    window.onload = () => {
+        anime({
+            targets: '.menu-card',
+            opacity: [0, 1],
+            translateY: [30, 0],
+            delay: anime.stagger(100),
+            easing: 'easeOutQuart'
+        });
+
+        anime({
+            targets: '.hud-header h1',
+            opacity: [1, 0.5],
+            duration: 2000,
+            direction: 'alternate',
+            loop: true,
+            easing: 'easeInOutSine'
+        });
+    };
+
+    async function submitData() {
+        const btn = document.querySelector('.btn-submit');
+        const statusText = document.getElementById('sys-status');
+        const nameInput = document.getElementById('user_name');
+        
+        // --- VALIDATION: CHECK IF NAME IS EMPTY ---
+        if (!nameInput.value.trim()) {
+            statusText.innerText = "STATUS: ERROR_NAME_REQUIRED";
+            statusText.style.color = "var(--j-err)";
+            
+            // Shake Animation for the Name Card
+            anime({
+                targets: '#name-card',
+                translateX: [-10, 10, -10, 10, 0],
+                borderColor: ['#00d4ff', '#ff0055', '#00d4ff'],
+                duration: 400,
+                easing: 'linear'
+            });
+            return; // Stop the script here
+        }
+
+        // Reset status style if validation passes
+        statusText.style.color = "var(--j-blue)";
+
+        const telemetryData = {
+            user_name: nameInput.value,
+            sleep_recovery: document.getElementById('sleep').value,
+            h2o_fuel: document.getElementById('water').value,
+            nutrient_io: document.getElementById('diet').value,
+            bio_sentiment: document.getElementById('mood').value,
+            ui_latency: document.getElementById('screen').value,
+            kinetic_idx: document.getElementById('activity').value,
+            timestamp: new Date().toISOString()
+        };
+
+        btn.innerText = "UPLOADING...";
+        statusText.innerText = "STATUS: TRANSFERRING_DATA_TO_KERNEL";
+        
+        try {
+            const response = await fetch('http://127.0.0.1:5000/log-telemetry', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(telemetryData)
+            });
+
+            if (response.ok) {
+                btn.innerText = "ORDER_PROCESSED";
+                btn.style.background = "#ffffff";
+                statusText.innerText = "STATUS: ARCHIVED_IN_MEMORY.JSON";
+                // --- PAGE TRANSITION LOGIC ---
+                // Wait 1 second so the user sees the "Success" animation, then move.
+                anime({
+                    targets: '.kiosk-frame',
+                    boxShadow: '0 0 100px #00ffaa',
+                    duration: 500,
+                    direction: 'alternate'
+                });
+                setTimeout(() => {
+                    window.location.href = "dashboard.html"; 
+                }, 500);
+            } else {
+                throw new Error("SERVER_REJECTED");
+            }
+        } catch (error) {
+            btn.innerText = "RETRY_UPLOAD";
+            statusText.innerText = "STATUS: CONNECTION_FAILURE";
+            statusText.style.color = "var(--j-err)";
+        }
+    }
+</script>
+</body>
+</html>
