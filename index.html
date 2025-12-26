@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALPHARISE | AI WELLNESS ECOSYSTEM</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=JetBrains+Mono&display=swap');
+        
+        :root { --accent: #22d3ee; --primary: #f472b6; }
+        body { background: #000; color: #fff; font-family: 'Orbitron', sans-serif; overflow-x: hidden; cursor: crosshair; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Heading Highlights */
+        .brand-heading {
+            background: linear-gradient(to bottom, #ffffff 40%, #666666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(244, 114, 182, 0.2));
+            letter-spacing: -0.02em;
+        }
+
+        .section-label {
+            text-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+            letter-spacing: 0.5em;
+            font-weight: 900;
+        }
+
+        /* Number Highlights */
+        .number-highlight { color: var(--accent); text-shadow: 0 0 20px rgba(34, 211, 238, 0.8); font-weight: 900; }
+        .number-highlight-pink { color: var(--primary); text-shadow: 0 0 20px rgba(244, 114, 182, 0.8); font-weight: 900; }
+
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+        }
+
+        .grid-line { position: absolute; background: rgba(34, 211, 238, 0.1); pointer-events: none; }
+        section { min-height: 100vh; padding: 80px 10%; display: flex; flex-direction: column; justify-content: center; position: relative; }
+        .reveal-text { opacity: 0; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="grid-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <nav class="fixed top-0 w-full p-8 flex justify-between items-center z-50">
+        <div class="text-2xl font-black tracking-tighter">ALPHA<span class="text-pink-500">RAISE</span></div>
+        <button onclick="window.location.href='login.html'" class="mono text-[10px] border border-cyan-500/30 px-6 py-2 hover:bg-cyan-500 hover:text-black transition-all">SYSTEM_INIT</button>
+    </nav>
+
+    <section id="hero">
+        <div class="relative z-10">
+            
+            <h3 class="text-6xl md:text-8xl font-black brand-heading reveal-text decrypt" data-value="TRACK LESS. UNDERSTAND MORE.">TRACK LESS. UNDERSTAND MORE.</h3>
+            <p class="mt-8 text-gray-400 max-w-2xl text-lg leading-relaxed reveal-text">
+                Alpharaise analyzes your health, mood, and productivity — then tells you <span class="text-white font-bold">what to do next</span>. One AI. One Dashboard. Total Wellness.
+            </p>
+            <div class="mt-12 reveal-text">
+                <button onclick="window.location.href='login.html'"class="bg-white text-black px-12 py-5 font-black text-xs tracking-widest hover:bg-pink-500 hover:text-white transition-all">BUILD BETTER HABITS</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="problem">
+        <h2 class="mono text-pink-500 text-xs section-label mb-12">THE_FRICTION</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="text-4xl md:text-5xl font-black tracking-tighter leading-tight reveal-text brand-heading">
+                DATA WITHOUT <br> INTELLIGENCE IS <br> <span class="text-pink-500 italic">USELESS.</span>
+            </div>
+            <div class="space-y-8">
+                <div class="glass-card p-6 reveal-text" onmouseenter="glitch(this)">
+                    <p class="mono text-xs text-cyan-400 mb-2">/ ERROR_01</p>
+                    <p class="text-gray-400">Health, mood, and lifestyle data are currently scattered across fragmented apps.</p>
+                </div>
+                <div class="glass-card p-6 reveal-text" onmouseenter="glitch(this)">
+                    <p class="mono text-xs text-cyan-400 mb-2">/ ERROR_02</p>
+                    <p class="text-gray-400">Existing apps show raw data but fail to provide actionable guidance for fatigue or stress.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works">
+        <h2 class="mono text-cyan-400 text-xs section-label mb-20 text-center">THE_PROTOCOL</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="glass-card p-10 flex flex-col justify-between h-[400px] reveal-text" onmouseenter="glitch(this)">
+                <span class="text-6xl number-highlight">01</span>
+                <div><h4 class="font-bold border-b border-white/10 mb-2 pb-2">LOG DATA</h4><p class="text-xs text-gray-500 mono">Sleep • Water • Diet</p></div>
+            </div>
+            <div class="glass-card p-10 flex flex-col justify-between h-[400px] reveal-text" onmouseenter="glitch(this)">
+                <span class="text-6xl number-highlight">02</span>
+                <div><h4 class="font-bold border-b border-white/10 mb-2 pb-2">ANALYZE</h4><p class="text-xs text-gray-500 mono">Health + Emotions</p></div>
+            </div>
+            <div class="glass-card p-10 flex flex-col justify-between h-[400px] reveal-text border-pink-500/50" style="background: rgba(244,114,182,0.05)" onmouseenter="glitch(this)">
+                <span class="text-6xl number-highlight-pink">03</span>
+                <div><h4 class="font-bold border-b border-white/10 mb-2 pb-2 text-pink-500">PREDICT</h4><p class="text-xs text-pink-200 mono">AI Forecasts Fatigue</p></div>
+            </div>
+            <div class="glass-card p-10 flex flex-col justify-between h-[400px] reveal-text" onmouseenter="glitch(this)">
+                <span class="text-6xl number-highlight">04</span>
+                <div><h4 class="font-bold border-b border-white/10 mb-2 pb-2">ACTION</h4><p class="text-xs text-gray-500 mono">Smart Pomodoro</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="productivity" class="items-center text-center">
+        <div class="max-w-4xl">
+            <h2 class="text-6xl md:text-8xl font-black brand-heading mb-8 reveal-text">WORK SMARTER.</h2>
+            <div class="glass-card p-8 rounded-full inline-block mb-8 reveal-text" onmouseenter="glitch(this)">
+                <p class="mono text-cyan-400 tracking-widest text-sm">SMART_POMODORO_ENGINE_ACTIVE</p>
+            </div>
+            <p class="text-gray-500 text-lg reveal-text max-w-2xl">
+                Alpharaise adjusts focus & break intervals dynamically to match your energy levels and prevent burnout.
+            </p>
+        </div>
+    </section>
+
+    <footer class="h-[60vh] flex flex-col items-center justify-center text-center border-t border-white/5">
+        <h2 class="text-4xl font-black mb-12 reveal-text brand-heading">READY TO UPGRADE?</h2>
+        <button onclick="window.location.href='log.html'" class="group relative px-20 py-8 overflow-hidden reveal-text border border-pink-500">
+            <div class="absolute inset-0 bg-pink-500 transition-transform translate-y-full group-hover:translate-y-0 duration-500"></div>
+            <span class="relative z-10 mono text-xl font-bold">LAUNCH_ECOSYSTEM</span>
+        </button>
+        <p class="mt-20 mono text-[9px] opacity-20 tracking-widest">© 2025 ALPHARISE // BUILT FOR GDG RANCHI</p>
+    </footer>
+
+    <script>
+        // GRID GENERATION
+        const grid = document.getElementById('grid-container');
+        for(let i=0; i<30; i++) {
+            const l = document.createElement('div');
+            l.className = 'grid-line';
+            if(i % 2 === 0) { l.style.width = '1px'; l.style.height = '100%'; l.style.left = (i * 3.5) + '%'; }
+            else { l.style.height = '1px'; l.style.width = '100%'; l.style.top = (i * 3.5) + '%'; }
+            grid.appendChild(l);
+        }
+
+        // MOUSE WARP EFFECT
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX - window.innerWidth / 2) * 0.015;
+            const y = (e.clientY - window.innerHeight / 2) * 0.015;
+            anime({ targets: '.grid-line', translateX: x, translateY: y, duration: 400, easing: 'easeOutQuad' });
+        });
+
+        // KINETIC GLITCH
+        function glitch(el) {
+            anime({ targets: el, skewX: [0, 10, -10, 0], translateX: [0, -5, 5, 0], duration: 300, easing: 'easeInOutQuad' });
+        }
+
+        // SCROLL OBSERVER & ANIMATION
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [50, 0],
+                            rotateX: [30, 0],
+                            scale: [0.95, 1],
+                            duration: 1200,
+                            easing: 'easeOutExpo'
+                        });
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal-text, .glass-card').forEach(el => observer.observe(el));
+
+            // INITIAL GRID REVEAL
+            anime({ targets: '.grid-line', opacity: [0, 0.15], scale: [0, 1], delay: anime.stagger(30), duration: 2000 });
+        });
+    </script>
+</body>
+</html>

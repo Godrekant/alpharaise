@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ALPHARISE | NEURAL_HUD_v7</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Fira+Code:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --c-neon: #00f3ff; --c-pink: #ff00ff; --c-yellow: #f3f315; --c-black: #000000; --c-red: #ff0055;
+        }
+        body {
+            background-color: var(--c-black); color: var(--c-neon);
+            font-family: 'Fira Code', monospace; margin: 0; padding: 0;
+            height: 100vh; width: 100vw; overflow: hidden;
+        }
+        .grid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.12) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0, 243, 255, 0.12) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: -1;
+        }
+        .center-engine { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; }
+        
+        /* Panel System */
+        .corner-panel {
+            position: absolute; width: 280px; background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--c-neon); padding: 18px; z-index: 10; opacity: 0;
+            clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%);
+        }
+        #master-telemetry { top: 30px; left: 30px; border-left: 5px solid var(--c-neon); }
+        #user-profile { top: 30px; right: 30px; border-right: 5px solid var(--c-pink); }
+        #ai-recommendation { bottom: 30px; left: 30px; border-left: 5px solid var(--c-yellow); }
+        #fatigue-prediction { bottom: 30px; right: 30px; border-right: 5px solid var(--c-red); }
+
+        /* Central HUD Visuals */
+        .svg-container { width: 380px; height: 380px; position: relative; }
+        .ring-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; filter: drop-shadow(0 0 8px var(--c-neon)); }
+        .percentage-display { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .percentage-display h2 { font-family: 'Orbitron'; font-size: 5.5rem; margin: 0; line-height: 1; color: var(--c-yellow); text-shadow: 0 0 25px var(--c-yellow); }
+        
+        /* Data Styling */
+        .header { font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 12px; color: var(--c-pink); letter-spacing: 2px; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .data-label { font-size: 0.55rem; color: var(--c-yellow); text-transform: uppercase; }
+        .data-val { font-size: 0.85rem; color: #fff; border-bottom: 1px solid rgba(0, 243, 255, 0.3); }
+        .rec-box { background: rgba(243, 243, 21, 0.05); padding: 10px; font-size: 0.75rem; border: 1px dashed var(--c-yellow); }
+        
+        /* Fatigue Specifics */
+        .prediction-status { font-size: 1.1rem; font-weight: 900; margin-bottom: 5px; }
+        .progress-mini { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); margin-top: 8px; border-radius: 3px; overflow: hidden; }
+        #fatigue-bar { width: 0%; height: 100%; background: var(--c-red); transition: width 1.5s ease-in-out; }
+    </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div class="center-engine">
+    <div class="svg-container">
+        <svg class="ring-layer" id="ring-mid" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="41" fill="none" stroke="var(--c-neon)" stroke-width="3" stroke-dasharray="10, 5" opacity="0.7" />
+        </svg>
+        <svg class="ring-layer" id="ring-inner" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="35" fill="none" stroke="var(--c-pink)" stroke-width="1" stroke-dasharray="2, 8" />
+        </svg>
+        <svg class="ring-layer" viewBox="0 0 100 100" style="transform: rotate(-90deg)">
+            <circle id="progress-bar" cx="50" cy="50" r="44" fill="none" stroke="var(--c-yellow)" stroke-width="4" stroke-dasharray="277" stroke-dashoffset="277" />
+        </svg>
+        <div class="percentage-display">
+            <h2 id="final-score">0</h2>
+            <span style="font-size: 0.6rem; letter-spacing: 4px; color: #fff;">SYNC_INDEX</span>
+        </div>
+    </div>
+</div>
+
+<div class="corner-panel" id="master-telemetry">
+    <div class="header">// NEURAL_LOGS</div>
+    <div class="data-grid" id="all-inputs-grid"></div>
+</div>
+
+<div class="corner-panel" id="user-profile">
+    <div class="header">// OPERATOR_ID</div>
+    <div class="user-name" id="display-name" style="font-size: 1.2rem; color: #fff; font-family: 'Orbitron';">LOADING...</div>
+    <div style="font-size: 0.6rem; color: var(--c-neon); margin-top: 5px;" id="current-time">00:00:00</div>
+</div>
+
+<div class="corner-panel" id="ai-recommendation">
+    <div class="header">// ADVISORY_CORE</div>
+    <div id="rec-output" class="rec-box">INITIALIZING...</div>
+</div>
+
+<div class="corner-panel" id="fatigue-prediction">
+    <div class="header">// FATIGUE_FORECAST</div>
+    <div class="prediction-status" id="fatigue-output">CALCULATING...</div>
+    <div class="data-label">CRASH_PROBABILITY</div>
+    <div class="progress-mini"><div id="fatigue-bar"></div></div>
+</div>
+
+<script>
+    async function syncSystem() {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/get-dashboard-data');
+            const data = await response.json();
+
+            document.getElementById('display-name').innerText = data.user_name || "SUBJECT_X";
+
+            // --- 6-PILLAR SYNC LOGIC ---
+            let syncScore = 0;
+            const s = parseFloat(data.sleep_recovery) || 0;
+            const w = parseInt(data.h2o_fuel) || 0;
+            const k = parseInt(data.kinetic_idx) || 0;
+            const scr = parseFloat(data.ui_latency) || 0;
+            const mood = data.bio_sentiment;
+            const diet = data.nutrient_io;
+
+            if (s >= 8) syncScore += 20; else if (s >= 6) syncScore += 10; else syncScore += 5;
+            if (w >= 8) syncScore += 20; else if (w >= 5) syncScore += 10; else syncScore += 5;
+            if (k >= 10000) syncScore += 20; else if (k >= 5000) syncScore += 10; else syncScore += 5;
+            if (scr <= 3 && scr > 0) syncScore += 15; else if (scr <= 7) syncScore += 7;
+            if (mood === "STABLE") syncScore += 15; else if (mood === "RECOVERY_MODE") syncScore += 8; else syncScore += 2;
+            if (diet === "OPTIMIZED_CLEAN") syncScore += 10; else if (diet === "LOW_CALORIC") syncScore += 5; else syncScore += 2;
+
+            // --- FATIGUE PREDICTION LOGIC ---
+            let fatiguePoints = 0;
+            if (s < 6) fatiguePoints += 40;
+            if (mood === "HIGH_STRESS") fatiguePoints += 30;
+            if (scr > 8) fatiguePoints += 20;
+            if (w < 4) fatiguePoints += 10;
+
+            // Update UI Elements
+            document.getElementById('fatigue-bar').style.width = fatiguePoints + "%";
+            const fOut = document.getElementById('fatigue-output');
+            if (fatiguePoints >= 70) { fOut.innerText = "CRITICAL_BURNOUT"; fOut.style.color = "var(--c-red)"; }
+            else if (fatiguePoints >= 40) { fOut.innerText = "MODERATE_RISK"; fOut.style.color = "var(--c-yellow)"; }
+            else { fOut.innerText = "STABLE_ENERGY"; fOut.style.color = "var(--c-neon)"; }
+
+            // Telemetry Grid
+            const inputGrid = document.getElementById('all-inputs-grid');
+            const fields = { bio_sentiment: "Mood", h2o_fuel: "Water", kinetic_idx: "Steps", nutrient_io: "Fuel", sleep_recovery: "Sleep", ui_latency: "Screen" };
+            inputGrid.innerHTML = "";
+            Object.entries(fields).forEach(([key, label]) => {
+                inputGrid.innerHTML += `<div class="data-row"><div class="data-label">${label}</div><div class="data-val">${data[key] || "VOID"}</div></div>`;
+            });
+
+            // Advisory
+            const recBox = document.getElementById('rec-output');
+            if(syncScore > 80) recBox.innerText = "OPTIMAL: Maximum synergy detected. Peak status.";
+            else if(syncScore > 50) recBox.innerText = "STABLE: System operating normally. Monitor load.";
+            else recBox.innerText = "WARNING: System degradation. Proactive rest advised.";
+
+            animateUI(syncScore);
+        } catch (e) { console.error("OFFLINE", e); }
+    }
+
+    function animateUI(score) {
+        anime({ targets: '.corner-panel', opacity: [0, 1], duration: 1000, delay: anime.stagger(200) });
+        anime({ targets: '#progress-bar', strokeDashoffset: [277, 277 - (277 * score / 100)], duration: 2500, easing: 'easeInOutExpo' });
+        anime({ targets: '#final-score', innerText: [0, score], round: 1, duration: 2000 });
+        anime({ targets: '#ring-mid', rotate: '1turn', duration: 12000, loop: true, easing: 'linear' });
+        anime({ targets: '#ring-inner', rotate: '-1turn', duration: 8000, loop: true, easing: 'linear' });
+    }
+
+    setInterval(() => { document.getElementById('current-time').innerText = new Date().toLocaleTimeString(); }, 1000);
+    syncSystem();
+</script>
+</body>
+</html>
